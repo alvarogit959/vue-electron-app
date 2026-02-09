@@ -1,39 +1,40 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <h3>MAIN MENU</h3>
+    <img  src="../assets/logo.png">
+    <h3>Bienvenido a tu abuela Rodolfo</h3>
     <button class="check-reserves">Ordenar por reservas</button>
     <div class="scroll-area">
-    <button class="glass">Reserva 1</button>
-    <button class="glass">Reserva 2</button>
-    <button class="glass">Reserva 3</button>
-    <button class="glass">Reserva 4</button>
-    <button class="glass">Reserva 5</button>
-    <button class="glass">Reserva 6</button>
-    <button class="glass">Reserva 7</button>
-    <button class="glass">Reserva 8</button>
-    <button class="glass">Reserva 9</button>
-    <button class="glass">Reserva 10</button>
-  </div>
+      <button class="glass">Reserva 1</button>
+      <button class="glass">Reserva 2</button>
+      <button class="glass">Reserva 3</button>
+      <button class="glass">Reserva 4</button>
+      <button class="glass">Reserva 5</button>
+      <button class="glass">Reserva 6</button>
+      <button class="glass">Reserva 7</button>
+      <button class="glass">Reserva 8</button>
+      <button class="glass">Reserva 9</button>
+      <button class="glass">Reserva 10</button>
+    </div>
     <button class="logout-btn" @click="logout">Cerrar sesión</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'mainMenu',
+  name: "mainMenu",
   props: {
-    msg: String
+    msg: String,
   },
   methods: {
     selectOption(option) {
       alert(`Seleccionaste: ${option}`);
     },
     logout() {
-      this.$emit('logout');
-    }
-  }
-}
+      this.$emit("logout");
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -46,8 +47,8 @@ export default {
   height: 50rem;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.12),
-    rgba(255,255,255,0.05)
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.05)
   );
   background-color: #00000005;
   backdrop-filter: blur(10px);
@@ -68,16 +69,19 @@ export default {
   -webkit-backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 
   border-radius: 1rem;
   color: white;
 }
+.check-reserves {
+  margin-left: 7.5rem;
+  justify-content: right;
+}
 .scroll-area {
   width: 50rem;
-  max-height: 25rem; 
+  max-height: 25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -85,12 +89,14 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
 
-align-items: center;
+  align-items: center;
   padding: 1rem;
 }
-h3{  font-family: "Inter", sans-serif;
-  color:rgb(255, 255, 255);
-font-size: 1.7rem;}
+h3 {
+  font-family: "Inter", sans-serif;
+  color: rgb(255, 255, 255);
+  font-size: 1.7rem;
+}
 input {
   font-family: "Inter", sans-serif;
   width: 60%;
@@ -145,9 +151,10 @@ button:active {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-p{width: 80%;}
+p {
+  width: 80%;
+}
 a {
   color: #ffffff;
 }
-
 </style>
