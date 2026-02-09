@@ -40,6 +40,9 @@ npm run electron:serve
 ### Build final de la aplicación:
 npm run electron:build   
 
+npm install vue-router
+
+
 
 <!--PRÁCTICA FINAL
 Crear una plataforma en móvil. ma para gestionar actividades y reservas tanto desde escritorio como en movil
@@ -99,5 +102,23 @@ ADMIN:  button: crear nueva actividad (+ arriba del todo)
                                  button: eliminar actividad
 
 
+BASE DE DATOS MONGODB
 
+    CUENTA: id
+            nombre-correo
+            contraseña
+            admin si no
+
+    
+    ACTIVIDADES: nombre
+                 descripción?
+                 duración
+                 usuarios:
+                 plazas maximas:
+
+
+
+
+
+https://www.fffuel.co/dddepth/
 -->
