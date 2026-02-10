@@ -13,6 +13,7 @@ const routes = [
     name: 'MainMenu',
     component: MainMenu
   }
+  
 ]
 
 const router = createRouter({

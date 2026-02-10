@@ -3,6 +3,7 @@
     <h1>{{ msg }}</h1>
     <img id="image" src="../assets/logo.png" />
     <h3>Crear nueva actividad</h3>
+    <p id="notifications">{{ notification }}</p>
     <input
       v-model="activityname"
       type="text"
@@ -24,28 +25,84 @@
       type="number"
       placeholder="Numero maximo de usuarios..."
     />
-    <button class="setNewActivity">Crear</button>
+    <button class="setNewActivity" @click="createActivity">Crear</button>
     <button class="return-btn" @click="goBack">Atrás</button>
     <!--@click="return"-->
   </div>
 </template>
 <script>
 export default {
-  name: "mainMenu",
+  name: "newActivity",
   props: {
     msg: String,
   },
+  data() {
+    return {
+      activityname: "",
+      activitydescription: "",
+      activityduration: "",
+      activitymaxusers: "",
+      notification: "",
+    };
+  },
+  /*nombre: {
+    type: String,
+    required: true
+  },
+  descripcion: String,
+  duracion: Number,
+  plazasMaximas: Number, */
   methods: {
+    async createActivity() {
+      if (!this.activityname || !this.activityduration || !this.activitymaxusers) {
+        this.notification = "Completa todos los campos!";
+        return;
+      }
+      try {
+        const res = await fetch("http://localhost:5000/actividades", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre: this.activityname,
+            descripcion: this.activitydescription,
+            duracion: parseInt(this.activityduration),
+            plazasMaximas: parseInt(this.activitymaxusers),
+          }),
+        });
+
+        if (!res.ok) {
+          this.notification = "Error, compruebe sus datos";
+          return;
+        }
+
+        const activity = await res.json();
+        //clean
+        this.activityname = "";
+        this.activitydescription = "";
+        this.activityduration = "";
+        this.activitymaxusers = "";
+
+
+        this.$emit("activity-created", activity);
+        this.notification = "Creada correctamente";
+      } catch (error) {
+        console.error(error);
+        this.notification = "Error conectando con servidor";
+      }
+    },
     selectOption(option) {
-      alert(`Seleccionaste: ${option}`);
+      this.notification = `Seleccionaste: ${option}`;
     },
     //TERMINAR!!!===============================
     /* return() {
       this.$emit("return");
     },*/
+    /*
     logout() {
       this.$emit("logout");
-    },
+    },*/
     goBack() {
       this.$emit("back");
     },
@@ -83,6 +140,11 @@ export default {
   width: 9rem;
   height: 9rem;
   object-fit: contain;
+}
+#notifications {
+  margin-top: -0.5rem;
+  margin-bottom: -0.02rem;
+  padding: 0;
 }
 .admin-options {
   padding: 1rem;
@@ -133,11 +195,9 @@ input {
   scrollbar-width: none;
   outline: none;
   transition: all 0.25s ease;
-
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 1rem;
   color: white;
