@@ -1,75 +1,73 @@
-
-
 <template>
-
   <login-view
     v-if="screen === 'login'"
     @login="handleLogin"
     @newUser="goNewUser"
   />
 
-  <newUser
-    v-else-if="screen === 'newUser'"
-    @back="goLogin"
-  />
+  <newUser v-else-if="screen === 'newUser'" @back="goLogin" />
   <mainMenuAdmin
-    v-else-if="user && user.admin"
-    @logout="logout"
-  />
-
-  <mainMenu
-    v-else-if="user"
-    @logout="logout"
-  />
-
+  v-else-if="screen === 'main' && user && user.admin"
+  @logout="logout"
+  @newActivity="goNewActivity"
+/>
+  <newActivity v-else-if="screen === 'newActivity'" @logout="logout" @back="goMain" />
+  <mainMenu v-else-if="screen === 'main' && user" @logout="logout" />
 </template>
 
 <script>
-import LoginView from './components/login-view.vue'
-import MainMenu from './components/mainMenu.vue'
+import LoginView from "./components/login-view.vue";
+import MainMenu from "./components/mainMenu.vue";
 import MainMenuAdmin from "./components/mainMenuAdmin.vue";
 import NewUser from "./components/newUser.vue";
+import NewActivity from "./components/newActivity.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
     LoginView,
     MainMenu,
     MainMenuAdmin,
-    NewUser
+    NewUser,
+    NewActivity,
   },
   data() {
     return {
       user: null,
-      screen:"login"
+      screen: "login",
     };
   },
-methods: {
+  methods: {
+    handleLogin(user) {
+      this.user = user;
+      this.screen = "main";
+    },
 
-  handleLogin(user) {
-    this.user = user;
-    this.screen = "main";
+    goNewUser() {
+      this.screen = "newUser";
+    },
+
+    goLogin() {
+      this.screen = "login";
+    },
+
+    logout() {
+      this.user = null;
+      this.screen = "login";
+    },
+    goNewActivity() {
+      this.screen = "newActivity";
+    },
+    goMain(){
+      this.screen="main"
+    }
   },
-
-  goNewUser() {
-    this.screen = "newUser";
-  },
-
-  goLogin() {
-    this.screen = "login";
-  },
-
-  logout() {
-    this.user = null;
-    this.screen = "login";
-  }
-
-}
 };
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-html, body {
+html,
+body {
   height: 100vh;
   width: 100vw;
   padding: 0;
@@ -88,11 +86,10 @@ html, body {
   height: 100vh;
   padding: 0rem;
   background-color: rgb(194, 221, 228);
-  background-image: url('assets/test2.png');
+  background-image: url("assets/test2.png");
   /*background-image: url('assets/backgroundtest.svg');*/
   background-size: cover; /* o contain, auto, etc. */
   background-position: center;
   background-repeat: no-repeat;
 }
-
 </style>

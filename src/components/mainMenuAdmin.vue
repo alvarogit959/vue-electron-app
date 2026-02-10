@@ -1,14 +1,14 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img  src="../assets/logo.png">
-    <h3>Bienvenido a tu abuela Rodolfo</h3>
-    <button class="check-reserves">Ordenar por reservas</button>
-     <button class="new-activity">Nueva actividad</button>
-<button class="check-reserves">Ver reservas</button>
-<button class="check-attendance">Comprobar asistencia</button>
-        button: ver reservas
-        button: comprobar asistencia
+    <img id="image" src="../assets/logo.png" />
+    <h3>Bienvenido usuario Admin</h3>
+    <div class="admin-options">
+      <button class="admin-button" id="check-reserves">Ordenar por reservas</button>
+      <button class="admin-button" @click="newActivity"  id="new-activity">Crear nueva actividad</button>
+      <button class="admin-button" id="check-reserves">Ver reservas</button>
+      <button class="admin-button" id="check-attendance">Comprobar asistencia</button>
+    </div>
     <div class="scroll-area">
       <div class="glass">Reserva 1</div>
       <div class="glass">Reserva 2</div>
@@ -38,6 +38,9 @@ export default {
     logout() {
       this.$emit("logout");
     },
+    newActivity(){
+      this.$emit("newActivity");
+    }
   },
 };
 </script>
@@ -68,34 +71,44 @@ export default {
   color: rgb(255, 255, 255);
   padding: 1rem;
 }
-.glass {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-
-  border-radius: 1rem;
-  color: white;
+#image {
+  width: 9rem;
+  height: 9rem;
+  object-fit: contain;
 }
-.check-reserves {
-  margin-left: 7.5rem;
-  justify-content: right;
+.admin-options {
+  padding:1rem;
+  width: 27rem;
 }
+.admin-button{margin: 0.2rem;}
 .scroll-area {
-  width: 50rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  width: 25rem;
   max-height: 25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
+  scrollbar-width: none;
   overflow-y: auto;
   overflow-x: hidden;
-
   align-items: center;
   padding: 1rem;
+}
+.glass {
+  width: 100%;
+  min-height: 5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  color: white;
+  align-items: center;
+  justify-content: center;
 }
 h3 {
   font-family: "Inter", sans-serif;

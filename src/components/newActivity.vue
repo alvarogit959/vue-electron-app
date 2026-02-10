@@ -2,24 +2,33 @@
   <div class="mainarea">
     <h1>{{ msg }}</h1>
     <img id="image" src="../assets/logo.png" />
-    <h3>Bienvenido a tu abuela Rodolfo</h3>
-    <button class="check-reserves">Ordenar por reservas</button>
-    <div class="scroll-area">
-      <div class="glass">Reserva 1</div>
-      <div class="glass">Reserva 2</div>
-      <div class="glass">Reserva 3</div>
-      <div class="glass">Reserva 4</div>
-      <div class="glass">Reserva 5</div>
-      <div class="glass">Reserva 6</div>
-      <div class="glass">Reserva 7</div>
-      <div class="glass">Reserva 8</div>
-      <div class="glass">Reserva 9</div>
-      <div class="glass">Reserva 10</div>
-    </div>
-    <button class="logout-btn" @click="logout">Cerrar sesión</button>
+    <h3>Crear nueva actividad</h3>
+    <input
+      v-model="activityname"
+      type="text"
+      placeholder="Nombre de la nueva actividad..."
+    />
+    <input
+      v-model="activitydescription"
+      type="text"
+      placeholder="Descripción..."
+    />
+    <input
+      v-model="activityduration"
+      type="number"
+      placeholder="Duración en minutos..."
+    />
+    <!--SOLO NUMEROS CAMBIAR!!!!!!!!!-->
+    <input
+      v-model="activitymaxusers"
+      type="number"
+      placeholder="Numero maximo de usuarios..."
+    />
+    <button class="setNewActivity">Crear</button>
+    <button class="return-btn" @click="goBack">Atrás</button>
+    <!--@click="return"-->
   </div>
 </template>
-
 <script>
 export default {
   name: "mainMenu",
@@ -30,8 +39,15 @@ export default {
     selectOption(option) {
       alert(`Seleccionaste: ${option}`);
     },
+    //TERMINAR!!!===============================
+    /* return() {
+      this.$emit("return");
+    },*/
     logout() {
       this.$emit("logout");
+    },
+    goBack() {
+      this.$emit("back");
     },
   },
 };
@@ -68,6 +84,13 @@ export default {
   height: 9rem;
   object-fit: contain;
 }
+.admin-options {
+  padding: 1rem;
+  width: 27rem;
+}
+.admin-button {
+  margin: 0.2rem;
+}
 .scroll-area {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 1rem;
@@ -88,7 +111,7 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  display:flex;
+  display: flex;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -97,11 +120,6 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.check-reserves {
-  margin-left: 7.5rem;
-  justify-content: right;
-}
-
 h3 {
   font-family: "Inter", sans-serif;
   color: rgb(255, 255, 255);
@@ -112,7 +130,7 @@ input {
   width: 60%;
   height: 2.8rem;
   padding: 0 1rem;
-
+  scrollbar-width: none;
   outline: none;
   transition: all 0.25s ease;
 
