@@ -1,72 +1,44 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img id="image"  src="../assets/logo.png">
-    <h3>Bienvenido a tu abuela</h3>
-    <p >
-      Bienvenido a la app, escriba su nombre de usuario y contraseña o cree una
-      cuenta nueva:
-    </p>
-    <p id="notifications">{{ notification }}</p>
-    <input v-model="username" type="text" placeholder="Nombre o correo..." />
-<input v-model="password" type="password" placeholder="Contraseña..." />
-    <button @click="login">Iniciar sesión</button>
-    <button @click="newUser">Crear cuenta</button>
-    <!--
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>-->
+    <img  src="../assets/logo.png">
+    <h3>Bienvenido a tu abuela Rodolfo</h3>
+    <button class="check-reserves">Ordenar por reservas</button>
+     <button class="new-activity">Nueva actividad</button>
+<button class="check-reserves">Ver reservas</button>
+<button class="check-attendance">Comprobar asistencia</button>
+        button: ver reservas
+        button: comprobar asistencia
+    <div class="scroll-area">
+      <div class="glass">Reserva 1</div>
+      <div class="glass">Reserva 2</div>
+      <div class="glass">Reserva 3</div>
+      <div class="glass">Reserva 4</div>
+      <div class="glass">Reserva 5</div>
+      <div class="glass">Reserva 6</div>
+      <div class="glass">Reserva 7</div>
+      <div class="glass">Reserva 8</div>
+      <div class="glass">Reserva 9</div>
+      <div class="glass">Reserva 10</div>
+    </div>
+    <button class="logout-btn" @click="logout">Cerrar sesión</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: "login-view",
+  name: "mainMenu",
   props: {
     msg: String,
   },
-  data() {
-    return {
-      username: "",
-      password: "",
-      notification: ""
-    };
+  methods: {
+    selectOption(option) {
+      alert(`Seleccionaste: ${option}`);
+    },
+    logout() {
+      this.$emit("logout");
+    },
   },
-methods: {
-  async login() {
-    try {
-      const res = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password
-        })
-      });
-
-
-      if (!res.ok) {
-        this.notification =  "Error, compruebe sus datos";
-        return;
-      }
-
-      const user = await res.json();
-
-      this.$emit("login", user);
-
-    } catch (error) {
-      console.error(error);
-      alert('Error conectando con servidor');
-    }
-  },
-  newUser() {
-  this.$emit("newUser");
-}
-},
 };
 </script>
 
@@ -80,8 +52,8 @@ methods: {
   height: 50rem;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.12),
-    rgba(255,255,255,0.05)
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.05)
   );
   background-color: #00000005;
   backdrop-filter: blur(10px);
@@ -89,7 +61,7 @@ methods: {
   border: 3px solid rgba(175, 175, 175, 0.2);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-
+  padding: 20px;
   align-items: center;
   justify-content: center;
   border-radius: 3rem;
@@ -102,27 +74,34 @@ methods: {
   -webkit-backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 
   border-radius: 1rem;
   color: white;
 }
-#image{width: 9rem; 
-  height: 9rem; 
-  object-fit: contain;
+.check-reserves {
+  margin-left: 7.5rem;
+  justify-content: right;
 }
-#notifications{
-color:rgb(255, 0, 0);
- margin-top: -0.5rem; 
-  margin-bottom: -0.02rem;
-padding: 0;
-}
+.scroll-area {
+  width: 50rem;
+  max-height: 25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-h3{  font-family: "Inter", sans-serif;
-  color:rgb(255, 255, 255);
-font-size: 1.7rem;}
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  align-items: center;
+  padding: 1rem;
+}
+h3 {
+  font-family: "Inter", sans-serif;
+  color: rgb(255, 255, 255);
+  font-size: 1.7rem;
+}
 input {
   font-family: "Inter", sans-serif;
   width: 60%;
@@ -177,7 +156,9 @@ button:active {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-p{width: 80%;}
+p {
+  width: 80%;
+}
 a {
   color: #ffffff;
 }

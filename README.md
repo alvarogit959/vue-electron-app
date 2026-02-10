@@ -37,10 +37,11 @@ vue add electron-builder
 
 npm run electron:serve   
 
+npm install vue-router
 ### Build final de la aplicación:
 npm run electron:build   
 
-npm install vue-router
+
 
 
 

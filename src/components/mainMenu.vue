@@ -1,7 +1,7 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img  src="../assets/logo.png">
+    <img  id="image" src="../assets/logo.png">
     <h3>Bienvenido a tu abuela Rodolfo</h3>
     <button class="check-reserves">Ordenar por reservas</button>
     <div class="scroll-area">
@@ -63,7 +63,12 @@ export default {
   color: rgb(255, 255, 255);
   padding: 1rem;
 }
+#image{width: 9rem; 
+  height: 9rem; 
+  object-fit: contain;
+}
 .glass {
+  width:100%;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -80,12 +85,14 @@ export default {
   justify-content: right;
 }
 .scroll-area {
-  width: 50rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius:1rem;
+  width: 25rem;
   max-height: 25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
+  scrollbar-width: none;
   overflow-y: auto;
   overflow-x: hidden;
 

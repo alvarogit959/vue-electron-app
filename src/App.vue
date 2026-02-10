@@ -1,30 +1,71 @@
 
 
-<template><!--
-  <img alt="Vue logo" src="./assets/logo.png">-->
-  <Login v-if="!showMainMenu" @login="showMainMenu = true" />
-  <MainMenu v-else @logout="showMainMenu = false" />
-<!--<MainMenu/>-->
+<template>
+
+  <login-view
+    v-if="screen === 'login'"
+    @login="handleLogin"
+    @newUser="goNewUser"
+  />
+
+  <newUser
+    v-else-if="screen === 'newUser'"
+    @back="goLogin"
+  />
+  <mainMenuAdmin
+    v-else-if="user && user.admin"
+    @logout="logout"
+  />
+
+  <mainMenu
+    v-else-if="user"
+    @logout="logout"
+  />
+
 </template>
 
 <script>
-import Login from './components/login-view.vue'
+import LoginView from './components/login-view.vue'
 import MainMenu from './components/mainMenu.vue'
-
+import MainMenuAdmin from "./components/mainMenuAdmin.vue";
+import NewUser from "./components/newUser.vue";
 export default {
   name: 'App',
   components: {
-    Login,
-    MainMenu
+    LoginView,
+    MainMenu,
+    MainMenuAdmin,
+    NewUser
   },
   data() {
     return {
-      showMainMenu: false 
-    }
-  }
-}
-</script>
+      user: null,
+      screen:"login"
+    };
+  },
+methods: {
 
+  handleLogin(user) {
+    this.user = user;
+    this.screen = "main";
+  },
+
+  goNewUser() {
+    this.screen = "newUser";
+  },
+
+  goLogin() {
+    this.screen = "login";
+  },
+
+  logout() {
+    this.user = null;
+    this.screen = "login";
+  }
+
+}
+};
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 

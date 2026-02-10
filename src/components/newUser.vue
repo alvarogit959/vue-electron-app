@@ -10,8 +10,10 @@
     <p id="notifications">{{ notification }}</p>
     <input v-model="username" type="text" placeholder="Nombre o correo..." />
 <input v-model="password" type="password" placeholder="Contraseña..." />
-    <button @click="login">Iniciar sesión</button>
-    <button @click="newUser">Crear cuenta</button>
+<input v-model="password" type="password" placeholder="Vuelva a escribir su contraseña" />
+    <button>Crear cuenta</button>
+    <button @click="$emit('back')">Atrás</button>
+
     <!--
     <h3>Installed CLI Plugins</h3>
     <ul>
@@ -56,16 +58,15 @@ methods: {
 
       const user = await res.json();
 
+      console.log('Login correcto', user);
+
       this.$emit("login", user);
 
     } catch (error) {
       console.error(error);
       alert('Error conectando con servidor');
     }
-  },
-  newUser() {
-  this.$emit("newUser");
-}
+  }
 },
 };
 </script>
