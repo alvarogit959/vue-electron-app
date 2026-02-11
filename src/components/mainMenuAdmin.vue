@@ -2,91 +2,93 @@
   <div class="mainarea">
     <h1>{{ msg }}</h1>
     <img id="image" src="../assets/logo.png" />
-    <h3>Bienvenido usuario Admin</h3>
+    <h3 id="titleText">Bienvenido usuario Admin</h3>
     <div class="admin-options">
-      <button class="admin-button" id="check-reserves">Ordenar por reservas</button>
-      <button class="admin-button" @click="newActivity"  id="new-activity">Crear nueva actividad</button>
+      <button class="admin-button" id="check-reserves">
+        Ordenar por reservas
+      </button>
       <button class="admin-button" id="check-reserves">Ver reservas</button>
-      <button class="admin-button" id="check-attendance">Comprobar asistencia</button>
+      <button class="admin-button" id="check-attendance">
+        Comprobar asistencia
+      </button>
+      <button class="admin-button" @click="newActivity" id="new-activity">
+        Crear nueva actividad
+      </button>
     </div>
     <!--scrollview: actividades  button: modificar actividad
                                  button: eliminar actividad-->
- <div class="scroll-area" v-if="!loading && !error">
-      <div 
-        v-for="actividad in actividades" 
-        :key="actividad._id" 
+    <div class="scroll-area" v-if="!loading && !error">
+      <div
+        v-for="actividad in actividades"
+        :key="actividad._id"
         class="glass activity-card"
-        :class="{ 'full': actividad.usuarios.length >= actividad.plazasMaximas }"
+        :class="{ full: actividad.usuarios.length >= actividad.plazasMaximas }"
       >
+        <!--NOMBRE-->
         <div class="activity-header">
           <h4>{{ actividad.nombre }}</h4>
-          <span class="activity-date">{{ formatDate(actividad.createdAt) }}</span>
+          <span class="activity-date">{{
+            formatDate(actividad.createdAt)
+          }}</span>
         </div>
+        <!--DESCRIPCION-->
         
-        <div class="activity-content">
           <p v-if="actividad.descripcion" class="activity-description">
             {{ actividad.descripcion }}
           </p>
+
           <p v-else class="no-description">Sin descripción</p>
+          <!--DURACIÓN-->
           
-          <div class="activity-details">
             <div class="detail-item">
               <span class="detail-label">Duración:</span>
               <span class="detail-value">{{ actividad.duracion }} minutos</span>
             </div>
+            <!--PLAZAS-->
             <div class="detail-item">
               <span class="detail-label">Plazas:</span>
               <span class="detail-value">
                 {{ actividad.usuarios.length }}/{{ actividad.plazasMaximas }}
-                <span v-if="actividad.usuarios.length >= actividad.plazasMaximas" class="full-badge">LLENO</span>
+                <span
+                  v-if="actividad.usuarios.length >= actividad.plazasMaximas"
+                  class="full-badge"
+                  >LLENO</span
+                >
               </span>
             </div>
+            <!--RESERVAS-->
             <div class="detail-item">
               <span class="detail-label">Reservas:</span>
               <span class="detail-value">{{ actividad.usuarios.length }}</span>
             </div>
-          </div>
           
-          <!-- Lista de usuarios inscritos (opcional, colapsable) -->
-          <div v-if="actividad.usuarios.length > 0" class="users-list">
-            <button 
-              @click="toggleUsers(actividad._id)" 
-              class="toggle-users-btn"
-            >
-              {{ showUsers[actividad._id] ? 'Ocultar' : 'Mostrar' }} usuarios ({{ actividad.usuarios.length }})
-            </button>
-            
-            <div v-if="showUsers[actividad._id]" class="users-container">
-              <div 
-                v-for="(usuario, index) in actividad.usuarios" 
-                :key="usuario._id || index"
-                class="user-item"
-              >
-                {{ usuario.nombreCorreo || `Usuario ${index + 1}` }}
-              </div>
-            </div>
-          </div>
-          <div v-else class="no-users">
-            No hay usuarios inscritos
-          </div>
-        </div>
+        
         
         <div class="activity-actions">
+          <!--MODIFICAR-->
           <button class="action-btn edit-btn" @click="editActivity(actividad)">
             Modificar
           </button>
-          <button class="action-btn delete-btn" @click="deleteActivity(actividad._id)">
-            Eliminar
-          </button>
-          <button 
-            class="action-btn details-btn" 
+
+          <!--DETALLES-->
+          <button
+            class="action-btn details-btn"
             @click="viewActivityDetails(actividad._id)"
             :disabled="actividad.usuarios.length === 0"
           >
             Ver detalles
           </button>
+<!--ELIMINAR-->
+          <button
+            class="action-btn delete-btn"
+            @click="deleteActivity(actividad._id)"
+          >
+            Eliminar
+          </button>
         </div>
-      </div></div>
+      </div>
+    </div>
+<!--CLOSE-->
     <button class="logout-btn" @click="logout">Cerrar sesión</button>
   </div>
 </template>
@@ -97,46 +99,45 @@ export default {
   props: {
     msg: String,
   },
-    data() {
+  data() {
     return {
       actividades: [],
       loading: false,
       error: null,
-      showUsers: {}, 
-      sortBy: 'recent'
+      showUsers: {},
+      sortBy: "recent",
     };
   },
   mounted() {
     this.loadActividades();
   },
   methods: {
-        async loadActividades() {
+    async loadActividades() {
       this.loading = true;
       this.error = null;
-      
+
       try {
-        const response = await fetch('http://localhost:5000/actividades');
-        
+        const response = await fetch("http://localhost:5000/actividades");
+
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
         this.actividades = data;
-        
       } catch (error) {
-        console.error('Error cargando actividades:', error);
+        console.error("Error cargando actividades:", error);
         this.error = `No se pudieron cargar las actividades: ${error.message}`;
       } finally {
         this.loading = false;
       }
     },
-        formatDate(dateString) {
+    formatDate(dateString) {
       const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
+      return date.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       });
     },
     selectOption(option) {
@@ -145,9 +146,9 @@ export default {
     logout() {
       this.$emit("logout");
     },
-    newActivity(){
+    newActivity() {
       this.$emit("newActivity");
-    }
+    },
   },
 };
 </script>
@@ -179,22 +180,38 @@ export default {
   padding: 1rem;
 }
 #image {
-  margin-top: -1.5rem; 
-  width: 9rem;
-  height: 9rem;
+
+  margin-top: -3rem;
+  width: 6rem;
+  height: 6rem;
   object-fit: contain;
 }
-.admin-options {
-   margin-top: -1.5rem; 
+#titleText{
 
-  width: 27rem;
+  font-size: 1rem;
+  margin-bottom: 2rem;
 }
-.admin-button{margin: 0.2rem;}
+.admin-options {
+  margin-top: -1.5rem;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+}
+.admin-button {
+  margin: 0.2rem;
+  min-width: 15%;
+  max-width: 20%;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .scroll-area {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 1rem;
   width: 90%;
-  height: 25rem;
+  min-height: 20rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -205,10 +222,32 @@ export default {
   padding: 1rem;
   font-size: 0.7rem;
 }
-.activity-card{background-color: rgb(255, 140, 0);width: 100%;}
-.action-btn{max-height: 3rem;
-font-size: 0.7rem;
+.activity-card {
+  gap:3%;
+  max-width:95%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 
+.activity-actions{
+  width: 30%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.3rem;
+}
+
+.action-btn {
+  max-height: 3rem;
+  font-size: 0.7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .glass {
   width: 100%;
@@ -226,7 +265,7 @@ font-size: 0.7rem;
   justify-content: center;
 }
 h3 {
-  margin-top: -0.5rem; 
+  margin-top: -0.5rem;
   font-family: "Inter", sans-serif;
   color: rgb(255, 255, 255);
   font-size: 1.7rem;
@@ -284,11 +323,31 @@ button:active {
   transform: translateY(0);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
-
+h4{
+margin:0.4rem}
 p {
   width: 80%;
 }
 a {
   color: #ffffff;
+}
+@media (max-width: 950px) {
+  .activity-card {
+      flex-wrap: wrap;
+    display:flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.5rem;
+    min-height:13rem;
+  }
+
+  .activity-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
 }
 </style>

@@ -2,19 +2,56 @@
   <div class="mainarea">
     <h1>{{ msg }}</h1>
     <img id="image" src="../assets/logo.png" />
-    <h3>Bienvenido a tu abuela Rodolfo</h3>
-    <button class="check-reserves">Ordenar por reservas</button>
-    <div class="scroll-area">
-      <div class="glass">Reserva 1</div>
-      <div class="glass">Reserva 2</div>
-      <div class="glass">Reserva 3</div>
-      <div class="glass">Reserva 4</div>
-      <div class="glass">Reserva 5</div>
-      <div class="glass">Reserva 6</div>
-      <div class="glass">Reserva 7</div>
-      <div class="glass">Reserva 8</div>
-      <div class="glass">Reserva 9</div>
-      <div class="glass">Reserva 10</div>
+    <h3 id="titleText">Bienvenido a tu abuela Rodolfo</h3>
+    <button class="check-reserves">Ordenar por numero de reservas</button>
+    <div class="scroll-area" v-if="!loading && !error">
+      <div
+        v-for="actividad in actividades"
+        :key="actividad._id"
+        class="glass activity-card"
+        :class="{ full: actividad.usuarios.length >= actividad.plazasMaximas }"
+      >
+        <!--NOMBRE-->
+        <div class="activity-header">
+          <h4>{{ actividad.nombre }}</h4>
+        </div>
+        <!--DESCRIPCION-->
+
+        <p v-if="actividad.descripcion" class="activity-description">
+          {{ actividad.descripcion }}
+        </p>
+
+        <p v-else class="no-description">Sin descripción</p>
+        <!--DURACIÓN-->
+
+        <div class="detail-item">
+          <span class="detail-label">Duración:</span>
+          <span class="detail-value">{{ actividad.duracion }} minutos</span>
+        </div>
+        <!--PLAZAS-->
+        <div class="detail-item">
+          <span class="detail-label">Plazas:</span>
+          <span class="detail-value">
+            {{ actividad.usuarios.length }}/{{ actividad.plazasMaximas }}
+            <span
+              v-if="actividad.usuarios.length >= actividad.plazasMaximas"
+              class="full-badge"
+              >LLENO</span
+            >
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <!--JOIN CAMBIAR A EXIT CON UN TOGGLE, NO PERMITIR SI PASA DETERMINADO TIEMPO-->
+          <button
+            class="action-btn join-btn"
+            @click="viewActivityDetails(actividad._id)"
+            :disabled="actividad.usuarios.length === 0"
+          >
+            Apuntarse
+          </button>
+        </div>
+      </div>
     </div>
     <button class="logout-btn" @click="logout">Cerrar sesión</button>
   </div>
@@ -26,12 +63,55 @@ export default {
   props: {
     msg: String,
   },
+  data() {
+    return {
+      actividades: [],
+      loading: false,
+      error: null,
+      showUsers: {},
+      sortBy: "recent",
+    };
+  },
+  mounted() {
+    this.loadActividades();
+  },
   methods: {
+    async loadActividades() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await fetch("http://localhost:5000/actividades");
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        this.actividades = data;
+      } catch (error) {
+        console.error("Error cargando actividades:", error);
+        this.error = `No se pudieron cargar las actividades: ${error.message}`;
+      } finally {
+        this.loading = false;
+      }
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    },
     selectOption(option) {
       alert(`Seleccionaste: ${option}`);
     },
     logout() {
       this.$emit("logout");
+    },
+    newActivity() {
+      this.$emit("newActivity");
     },
   },
 };
@@ -43,7 +123,7 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  width: 30rem;
+  width: 80%;
   height: 50rem;
   background: linear-gradient(
     135deg,
@@ -64,15 +144,22 @@ export default {
   padding: 1rem;
 }
 #image {
-  width: 9rem;
-  height: 9rem;
+
+  margin-top: -3rem;
+  width: 6rem;
+  height: 6rem;
   object-fit: contain;
+}
+#titleText{
+
+  font-size: 1rem;
+  margin-bottom: 2rem;
 }
 .scroll-area {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 1rem;
-  width: 25rem;
-  max-height: 25rem;
+  width: 90%;
+  min-height: 20rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -81,6 +168,17 @@ export default {
   overflow-x: hidden;
   align-items: center;
   padding: 1rem;
+  font-size: 0.7rem;
+}
+.activity-card {
+  gap: 3%;
+  max-width: 95%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 .glass {
   width: 100%;
@@ -88,7 +186,7 @@ export default {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  display:flex;
+  display: flex;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -98,8 +196,8 @@ export default {
   justify-content: center;
 }
 .check-reserves {
-  margin-left: 7.5rem;
-  justify-content: right;
+  margin-right: -62%;
+  width: 30%;
 }
 
 h3 {
@@ -166,5 +264,25 @@ p {
 }
 a {
   color: #ffffff;
+}
+@media (max-width: 950px) {
+  .activity-card {
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    min-height: 9rem;
+    justify-content: center;
+  }
+
+  .activity-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
 }
 </style>

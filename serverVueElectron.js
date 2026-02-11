@@ -78,21 +78,29 @@ const Actividad = mongoose.model("Actividad", actividadSchema);
 //Crear actividad
 app.post("/actividades", async (req, res) => {
   try {
+    const { duracion, plazasMaximas } = req.body;
+
     if (duracion <= 0 || plazasMaximas <= 0) {
-      return res.status(400).json({ 
-        error: "Error! Duracion negativa" 
+      return res.status(400).json({
+        error: "Duración o plazas inválidas"
       });
     }
 
     const actividad = new Actividad(req.body);
     await actividad.save();
+
     res.status(201).json(actividad);
+
   } catch (err) {
-    res.status(500).json({ error: "Error creando actividad" });
-//Test comprobacion de duplicados, 11000 es el codigo de duplicado
-if (err.code === 11000) {
-      return res.status(400).json({ error: "Ya existe una actividad con ese nombre" });
+
+    // duplicados
+    if (err.code === 11000) {
+      return res.status(400).json({
+        error: "Ya existe una actividad con ese nombre"
+      });
     }
+
+    res.status(500).json({ error: "Error creando actividad" });
   }
 });
 //Obtener actividades
@@ -188,14 +196,27 @@ app.post("/actividades/:id/desinscribir", async (req, res) => {
 //crear usuario
 app.post("/users", async (req, res) => {
   try {
+
     const user = new User(req.body);
     await user.save();
 
-    res.status(201).json(user);
+    res.status(201).json({
+      id: user._id,
+      nombreCorreo: user.nombreCorreo
+    });
+
   } catch (err) {
+
+    if (err.code === 11000) {
+      return res.status(400).json({
+        error: "Ese usuario ya existe"
+      });
+    }
+
     res.status(500).json({ error: "Error creando usuario" });
   }
 });
+
 //TEST LOGIN
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;

@@ -10,8 +10,8 @@
     <p id="notifications">{{ notification }}</p>
     <input v-model="username" type="text" placeholder="Nombre o correo..." />
 <input v-model="password" type="password" placeholder="Contraseña..." />
-<input v-model="password" type="password" placeholder="Vuelva a escribir su contraseña" />
-    <button>Crear cuenta</button>
+<input v-model="confirmpassword" type="password" placeholder="Vuelva a escribir su contraseña" />
+    <button @click="createUser">Crear cuenta</button>
     <button @click="$emit('back')">Atrás</button>
 
     <!--
@@ -29,14 +29,58 @@ export default {
   props: {
     msg: String,
   },
-  data() {
-    return {
-      username: "",
-      password: "",
-      notification: ""
-    };
-  },
+data() {
+  return {
+    username: "",
+    password: "",
+    confirmpassword: "",
+    notification: ""
+  };
+},
 methods: {
+  async createUser() {
+
+  if (this.password !== this.confirmpassword) {
+    this.notification = "Las contraseñas no coinciden";
+    return;
+  }
+
+  if (!this.username || !this.password) {
+    this.notification = "Rellene todos los campos";
+    return;
+  }
+
+  try {
+
+    const res = await fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombreCorreo: this.username,
+        password: this.password
+      })
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      this.notification = error.error || "Error creando usuario";
+      return;
+    }
+
+    this.notification = "Usuario creado correctamente";
+
+    this.username = "";
+    this.password = "";
+    this.confirmpassword = "";
+
+  } catch (error) {
+    console.error(error);
+    this.notification = "Error conectando con servidor";
+  }
+},
+
   async login() {
     try {
       const res = await fetch('http://localhost:5000/login', {
@@ -115,7 +159,6 @@ methods: {
   object-fit: contain;
 }
 #notifications{
-color:rgb(255, 0, 0);
  margin-top: -0.5rem; 
   margin-bottom: -0.02rem;
 padding: 0;
