@@ -1,11 +1,10 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img id="image"  src="../assets/logo.png">
-    <h3>Bienvenido a tu abuela</h3>
+    <img id="image"  src="../assets/transport.png">
+    <h3>CarMeet Club</h3>
     <p >
-      Bienvenido a la app, escriba su nombre de usuario y contraseña o cree una
-      cuenta nueva:
+      Cree su nuevo usario en CarMeet Club
     </p>
     <p id="notifications">{{ notification }}</p>
     <input v-model="username" type="text" placeholder="Nombre o correo..." />
@@ -120,9 +119,9 @@ methods: {
 .mainarea {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
-  width: 30rem;
-  height: 50rem;
+  row-gap: 0.5rem;
+  width: 50%;
+  height: 88%;
   background: linear-gradient(
     135deg,
     rgba(255,255,255,0.12),
@@ -140,6 +139,7 @@ methods: {
   border-radius: 3rem;
   color: rgb(255, 255, 255);
   padding: 1rem;
+  -webkit-app-region: no-drag;
 }
 .glass {
   background: rgba(255, 255, 255, 0.15);
@@ -157,6 +157,8 @@ methods: {
 #image{width: 9rem; 
   height: 9rem; 
   object-fit: contain;
+    margin-top: -3rem;
+  margin-bottom: -3rem;
 }
 #notifications{
  margin-top: -0.5rem; 
@@ -196,18 +198,14 @@ button {
   font-family: "Inter", sans-serif;
   width: 45%;
   padding: 0.9rem;
-
   cursor: pointer;
   transition: all 0.25s ease;
-
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 1rem;
   color: white;
-
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 

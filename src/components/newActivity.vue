@@ -1,7 +1,7 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img id="image" src="../assets/logo.png" />
+    <img id="image" src="../assets/transport.png" />
     <h3>Crear nueva actividad</h3>
     <p id="notifications">{{ notification }}</p>
     <input
@@ -14,6 +14,16 @@
       type="text"
       placeholder="Descripción..."
     />
+    <div class="date-input-container">
+      <input
+        v-model="activitydate"
+        type="datetime-local"
+        :min="minDate"
+        class="date-input"
+        :class="{ 'error': errors.fecha }"
+      />
+      
+    </div>
     <input
       v-model="activityduration"
       type="number"
@@ -37,13 +47,28 @@ export default {
     msg: String,
   },
   data() {
-    return {
+        const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const horas = String(hoy.getHours()).padStart(2, '0');
+    const minutos = String(hoy.getMinutes()).padStart(2, '0');
+
+    const fechaMinima = `${año}-${mes}-${dia}T${horas}:${minutos}`;
+   return {
       activityname: "",
       activitydescription: "",
+      activitydate: "", 
       activityduration: "",
       activitymaxusers: "",
       notification: "",
-    };
+      minDate: fechaMinima, 
+      errors: {
+        nombre: false,
+        fecha: false,
+        duracion: false,
+        plazas: false
+   }};
   },
   /*nombre: {
     type: String,
@@ -66,7 +91,8 @@ export default {
           },
           body: JSON.stringify({
             nombre: this.activityname,
-            descripcion: this.activitydescription,
+            descripcion: this.activitydescription || "", 
+            fecha: new Date(this.activitydate).toISOString(), 
             duracion: parseInt(this.activityduration),
             plazasMaximas: parseInt(this.activitymaxusers),
           }),
@@ -81,6 +107,7 @@ export default {
         //clean
         this.activityname = "";
         this.activitydescription = "";
+        this.activitydate = "";
         this.activityduration = "";
         this.activitymaxusers = "";
 
@@ -135,11 +162,14 @@ export default {
   border-radius: 3rem;
   color: rgb(255, 255, 255);
   padding: 1rem;
+  -webkit-app-region: no-drag;
 }
 #image {
   width: 9rem;
   height: 9rem;
   object-fit: contain;
+    margin-top: -3rem;
+  margin-bottom: -3rem;
 }
 #notifications {
   margin-top: -0.5rem;
@@ -187,6 +217,7 @@ h3 {
   color: rgb(255, 255, 255);
   font-size: 1.7rem;
 }
+.date-input-container{width: 30rem;}
 input {
   font-family: "Inter", sans-serif;
   width: 60%;

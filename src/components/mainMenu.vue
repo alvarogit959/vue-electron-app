@@ -1,9 +1,12 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img id="image" src="../assets/logo.png" />
-    <h3 id="titleText">Bienvenido a tu abuela Rodolfo</h3>
+    <img id="image" src="../assets/transport.png" />
+    <h3 id="titleText">CarMeet Club</h3>
+    <div class="buttonarea">
+    <button class="logout-btn" @click="logout">Cerrar sesión</button>
     <button class="check-reserves">Ordenar por numero de reservas</button>
+    </div>
     <div class="scroll-area" v-if="!loading && !error">
       <div
         v-for="actividad in actividades"
@@ -53,7 +56,7 @@
         </div>
       </div>
     </div>
-    <button class="logout-btn" @click="logout">Cerrar sesión</button>
+    
   </div>
 </template>
 
@@ -122,13 +125,13 @@ export default {
 .mainarea {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
-  width: 80%;
-  height: 50rem;
+  row-gap: 0.5rem;
+  width: 75%;
+  height: 88%;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.12),
-    rgba(255, 255, 255, 0.05)
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0.05)
   );
   background-color: #00000005;
   backdrop-filter: blur(10px);
@@ -136,24 +139,46 @@ export default {
   border: 3px solid rgba(175, 175, 175, 0.2);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  padding: 20px;
+
   align-items: center;
   justify-content: center;
   border-radius: 3rem;
   color: rgb(255, 255, 255);
   padding: 1rem;
+  -webkit-app-region: no-drag;
 }
 #image {
-
   margin-top: -3rem;
+  margin-bottom: -3rem;
   width: 6rem;
   height: 6rem;
   object-fit: contain;
+  padding-right: 40rem;
 }
 #titleText{
-
   font-size: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+    padding-right: 40rem;
+}
+.buttonarea{display: flex;
+flex-direction: row;
+justify-content: left;
+height: 3rem;
+column-gap: 25rem;
+padding-bottom:0.5rem ;
+}
+button {
+  font-family: "Inter", sans-serif;
+  padding: 0.9rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 1rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 .scroll-area {
   background: rgba(255, 255, 255, 0.15);
@@ -195,10 +220,6 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.check-reserves {
-  margin-right: -62%;
-  width: 30%;
-}
 
 h3 {
   font-family: "Inter", sans-serif;
@@ -230,24 +251,7 @@ input:focus {
   border-color: rgba(255, 255, 255, 0.6);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
 }
-button {
-  font-family: "Inter", sans-serif;
-  width: 45%;
-  padding: 0.9rem;
 
-  cursor: pointer;
-  transition: all 0.25s ease;
-
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 1rem;
-  color: white;
-
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-}
 
 button:hover {
   background: rgba(255, 255, 255, 0.22);
@@ -281,8 +285,6 @@ a {
     justify-content: space-between;
   }
 
-  .action-btn {
-    width: 100%;
-  }
+
 }
 </style>

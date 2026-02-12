@@ -61,7 +61,10 @@ const actividadSchema = new mongoose.Schema({
   descripcion: String,
   duracion: { type: Number, required: true },
   plazasMaximas: { type: Number, required: true },
-
+  fecha: { 
+    type: Date,
+    required: true,
+  },
   usuarios: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -78,11 +81,26 @@ const Actividad = mongoose.model("Actividad", actividadSchema);
 //Crear actividad
 app.post("/actividades", async (req, res) => {
   try {
-    const { duracion, plazasMaximas } = req.body;
+    const { duracion, plazasMaximas, fecha } = req.body;
 
     if (duracion <= 0 || plazasMaximas <= 0) {
       return res.status(400).json({
         error: "Duración o plazas inválidas"
+      });
+    }
+
+    const fechaActividad = new Date(fecha);
+    const ahora = new Date();
+    
+    if (isNaN(fechaActividad.getTime())) {
+      return res.status(400).json({
+        error: "Fecha inválida"
+      });
+    }
+
+    if (fechaActividad < ahora) {
+      return res.status(400).json({
+        error: "La fecha debe ser futura"
       });
     }
 
@@ -92,14 +110,13 @@ app.post("/actividades", async (req, res) => {
     res.status(201).json(actividad);
 
   } catch (err) {
-
-    // duplicados
     if (err.code === 11000) {
       return res.status(400).json({
         error: "Ya existe una actividad con ese nombre"
       });
     }
 
+    console.error(err);
     res.status(500).json({ error: "Error creando actividad" });
   }
 });

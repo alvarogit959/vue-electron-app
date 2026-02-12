@@ -1,25 +1,24 @@
 <template>
   <div class="mainarea">
     <h1>{{ msg }}</h1>
-    <img id="image" src="../assets/logo.png" />
+    <img id="image" src="../assets/transport.png" />
     <h3 id="titleText">Bienvenido usuario Admin</h3>
     <div class="admin-options">
-      <button class="admin-button" id="check-reserves">
-        Ordenar por reservas
+      <!--CLOSE-->
+    <button class="admin-button" @click="logout">Cerrar sesión</button>
+      <button class="admin-button" id="check-reserves" @click="sortByReserves">
+        Ordenar por numero de reservas
       </button>
-      <button class="admin-button" id="check-reserves">Ver reservas</button>
-      <button class="admin-button" id="check-attendance">
+      <!--<button class="admin-button" id="check-attendance">
         Comprobar asistencia
-      </button>
+      </button>-->
       <button class="admin-button" @click="newActivity" id="new-activity">
         Crear nueva actividad
       </button>
     </div>
-    <!--scrollview: actividades  button: modificar actividad
-                                 button: eliminar actividad-->
     <div class="scroll-area" v-if="!loading && !error">
       <div
-        v-for="actividad in actividades"
+        v-for="actividad in actividadesOrdenadas"
         :key="actividad._id"
         class="glass activity-card"
         :class="{ full: actividad.usuarios.length >= actividad.plazasMaximas }"
@@ -56,11 +55,11 @@
                 >
               </span>
             </div>
-            <!--RESERVAS-->
+            <!--RESERVAS
             <div class="detail-item">
               <span class="detail-label">Reservas:</span>
               <span class="detail-value">{{ actividad.usuarios.length }}</span>
-            </div>
+            </div>-->
           
         
         
@@ -88,8 +87,7 @@
         </div>
       </div>
     </div>
-<!--CLOSE-->
-    <button class="logout-btn" @click="logout">Cerrar sesión</button>
+
   </div>
 </template>
 
@@ -106,7 +104,30 @@ export default {
       error: null,
       showUsers: {},
       sortBy: "recent",
+      sortDirection: "desc",
     };
+  },
+  computed: {
+    actividadesOrdenadas() {
+
+      const actividadesCopy = [...this.actividades];
+      
+      if (this.sortBy === 'reserves') {
+
+        return actividadesCopy.sort((a, b) => {
+          if (this.sortDirection === 'desc') {
+            return b.usuarios.length - a.usuarios.length; 
+          } else {
+            return a.usuarios.length - b.usuarios.length; 
+          }
+        });
+      } else {
+//Mas reciente primero
+        return actividadesCopy.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+      }
+    }
   },
   mounted() {
     this.loadActividades();
@@ -125,6 +146,7 @@ export default {
 
         const data = await response.json();
         this.actividades = data;
+        this.sortBy = "recent";
       } catch (error) {
         console.error("Error cargando actividades:", error);
         this.error = `No se pudieron cargar las actividades: ${error.message}`;
@@ -149,8 +171,33 @@ export default {
     newActivity() {
       this.$emit("newActivity");
     },
+        sortByReserves() {
+      if (this.sortBy === 'reserves') {
+//altrernar
+        this.sortDirection = this.sortDirection === 'desc' ? 'asc' : 'desc';
+      } else {
+        this.sortBy = 'reserves';
+        this.sortDirection = 'desc';
+      }
+    },
+    async deleteActivity(actividadId) {
+      try {
+        const response = await fetch(`http://localhost:5000/actividades/${actividadId}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) {
+          throw new Error('Error al eliminar la actividad');
+        }
+        await this.loadActividades();
+       //alert('Actividad eliminada correctamente');
+      } catch (error) {
+        console.error('Error eliminando actividad:', error);
+        alert('Error al eliminar la actividad');
+      }
+    }
   },
 };
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -158,13 +205,13 @@ export default {
 .mainarea {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
-  width: 80%;
-  height: 50rem;
+  row-gap: 0.5rem;
+  width: 75%;
+  height: 88%;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.12),
-    rgba(255, 255, 255, 0.05)
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0.05)
   );
   background-color: #00000005;
   backdrop-filter: blur(10px);
@@ -172,12 +219,13 @@ export default {
   border: 3px solid rgba(175, 175, 175, 0.2);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  padding: 20px;
+
   align-items: center;
   justify-content: center;
   border-radius: 3rem;
   color: rgb(255, 255, 255);
   padding: 1rem;
+  -webkit-app-region: no-drag;
 }
 #image {
 

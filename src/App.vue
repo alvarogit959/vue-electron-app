@@ -1,4 +1,8 @@
 <template>
+  <div class="buttoncontanier">
+  <button class="defaultbutton" @click="minimizeWindow">_</button>
+  <button class="defaultbutton" @click="closeWindow">X</button>
+  </div>
   <login-view
     v-if="screen === 'login'"
     @login="handleLogin"
@@ -59,7 +63,18 @@ export default {
     },
     goMain(){
       this.screen="main"
+    },
+        minimizeWindow() {
+      if (window.electron) {
+        window.electron.ipcRenderer.send('minimize-window');
+      }
+    },
+    closeWindow() {
+      if (window.electron) {
+        window.electron.ipcRenderer.send('close-window');
+      }
     }
+
   },
 };
 </script>
@@ -72,6 +87,10 @@ body {
   width: 100vw;
   padding: 0;
   margin: 0;
+  border-radius: 1rem;
+  background: transparent;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
 }
 
 #app {
@@ -91,5 +110,37 @@ body {
   background-size: cover; /* o contain, auto, etc. */
   background-position: center;
   background-repeat: no-repeat;
+  border-radius: 3rem;
+  -webkit-app-region: drag;
+}
+.buttoncontanier{position: absolute;
+right:1.5rem;
+top:1.5rem;
+-webkit-app-region: no-drag;
+}
+.defaultbutton {
+  font-family: "Inter", sans-serif;
+  width: 2rem;
+  padding: 0.5rem;
+  margin:0.1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.5rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.defaultbutton:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+.defaultbutton:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 </style>

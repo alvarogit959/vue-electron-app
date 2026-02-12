@@ -1,6 +1,6 @@
 'use strict'
-
-import { app, protocol, BrowserWindow } from 'electron'
+import path from 'path'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -9,18 +9,24 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
-
+let win;
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  win = new BrowserWindow({
+    width: 1080,
+    height: 750,
+    resizable: false,
+        frame: false,
+            transparent: true,
+             backgroundColor: '#00000000',
     webPreferences: {
-      
+            preload: path.join(__dirname, 'preload.js'),
+
+
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: false,
+      contextIsolation: true
     }
   })
 
@@ -34,6 +40,15 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 }
+ipcMain.on('minimize-window', () => {
+    console.log("MINIMIZE RECIBIDO");
+  if (win) win.minimize();
+});
+
+ipcMain.on('close-window', () => {
+    console.log("CLOSE RECIBIDO");
+  if (win) win.close();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

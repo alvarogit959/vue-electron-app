@@ -36,6 +36,7 @@ npm install --save-dev electron
 vue add electron-builder   
 
 npm run electron:serve   
+npm install cors mongoose
 
 npm install vue-router
 ### Build final de la aplicación:
