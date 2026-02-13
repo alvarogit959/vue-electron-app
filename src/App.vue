@@ -1,7 +1,7 @@
 <template>
   <div class="buttoncontanier">
-  <button class="defaultbutton" @click="minimizeWindow">_</button>
-  <button class="defaultbutton" @click="closeWindow">X</button>
+    <button class="defaultbutton" @click="minimizeWindow">_</button>
+    <button class="defaultbutton" @click="closeWindow">X</button>
   </div>
   <login-view
     v-if="screen === 'login'"
@@ -11,20 +11,46 @@
 
   <newUser v-else-if="screen === 'newUser'" @back="goLogin" />
   <mainMenuAdmin
-  v-else-if="screen === 'main' && user && user.admin"
-  @logout="logout"
-  @newActivity="goNewActivity"
+    v-else-if="screen === 'main' && user && user.admin"
+    :user="user"
+    @logout="logout"
+    @newActivity="goNewActivity"
+    @editActivity="goEditActivity"
+    @AttendanceActivity="goAttendanceActivity"
+  />
+  <newActivity
+    v-else-if="screen === 'newActivity'"
+    @logout="logout"
+    @back="goMain"
+  />
+  <editActivity
+  v-else-if="screen === 'editActivity'"
+  :activity="selectedActivity"
+  @back="goMain"
 />
-  <newActivity v-else-if="screen === 'newActivity'" @logout="logout" @back="goMain" />
-  <mainMenu v-else-if="screen === 'main' && user" @logout="logout" />
+<attendanceActivity
+  v-else-if="screen === 'attendanceActivity'"
+  :activity="selectedActivity"
+  @back="goMain"
+/>
+
+ <mainMenu
+  v-else-if="screen === 'main' && user"
+  :user="user"
+  @logout="logout"
+/>
+
 </template>
 
 <script>
+//ACORDARSE DE IMPORTAR AQUI TAMBIEN
 import LoginView from "./components/login-view.vue";
 import MainMenu from "./components/mainMenu.vue";
 import MainMenuAdmin from "./components/mainMenuAdmin.vue";
 import NewUser from "./components/newUser.vue";
 import NewActivity from "./components/newActivity.vue";
+import EditActivity from "./components/editActivity.vue";
+import AttendanceActivity from "./components/attendanceActivity.vue";
 export default {
   name: "App",
   components: {
@@ -33,11 +59,14 @@ export default {
     MainMenuAdmin,
     NewUser,
     NewActivity,
+    EditActivity,
+    AttendanceActivity,
   },
   data() {
     return {
       user: null,
       screen: "login",
+      selectedActivity: null,
     };
   },
   methods: {
@@ -61,20 +90,27 @@ export default {
     goNewActivity() {
       this.screen = "newActivity";
     },
-    goMain(){
-      this.screen="main"
+    goEditActivity(actividad) {
+  this.selectedActivity = actividad;
+  this.screen = "editActivity";
+},
+    goAttendanceActivity(actividad) {
+  this.selectedActivity = actividad;
+  this.screen = "attendanceActivity";
+},
+    goMain() {
+      this.screen = "main";
     },
-        minimizeWindow() {
+    minimizeWindow() {
       if (window.electron) {
-        window.electron.ipcRenderer.send('minimize-window');
+        window.electron.ipcRenderer.send("minimize-window");
       }
     },
     closeWindow() {
       if (window.electron) {
-        window.electron.ipcRenderer.send('close-window');
+        window.electron.ipcRenderer.send("close-window");
       }
-    }
-
+    },
   },
 };
 </script>
@@ -113,16 +149,17 @@ body {
   border-radius: 3rem;
   -webkit-app-region: drag;
 }
-.buttoncontanier{position: absolute;
-right:1.5rem;
-top:1.5rem;
--webkit-app-region: no-drag;
+.buttoncontanier {
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  -webkit-app-region: no-drag;
 }
 .defaultbutton {
   font-family: "Inter", sans-serif;
   width: 2rem;
   padding: 0.5rem;
-  margin:0.1rem;
+  margin: 0.1rem;
   cursor: pointer;
   transition: all 0.25s ease;
   background: rgba(255, 255, 255, 0.12);

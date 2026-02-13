@@ -42,11 +42,18 @@ npm install vue-router
 ### Build final de la aplicación:
 npm run electron:build   
 
-
-
-
-
 <!--PRÁCTICA FINAL
+
+Comprobar asistencia
+Si canceló en los 15 min anteriores se considera falta de asistencia?
+ver lista nombres usuarios con asistencia o no?
+
+
+
+
+
+
+
 Crear una plataforma en móvil. ma para gestionar actividades y reservas tanto desde escritorio como en movil
 Backend: Mongo (obligatorio) y API en tecnología libre.
 frontend: App de escritorio (Electron y Vue JS), App movil (flutter y Material Design)
@@ -68,7 +75,7 @@ Cosas que restan:
 - No controlar reservas duplicadas (-1pt)
 Extras:
 Hacer un README.md decente
-→ Funcionamiento y errores.
+Funcionamiento y errores.
 Dos diagramas de casos de uso
 
 

@@ -4,12 +4,18 @@
     <img id="image" src="../assets/transport.png" />
     <h3 id="titleText">CarMeet Club</h3>
     <div class="buttonarea">
-    <button class="logout-btn" @click="logout">Cerrar sesión</button>
-    <button class="check-reserves">Ordenar por numero de reservas</button>
+      <button class="logout-btn" @click="logout">Cerrar sesión</button>
+      <button
+        class="check-reserves"
+        id="check-reserves"
+        @click="sortByReserves"
+      >
+        Ordenar por numero de reservas
+      </button>
     </div>
     <div class="scroll-area" v-if="!loading && !error">
       <div
-        v-for="actividad in actividades"
+        v-for="actividad in sortedActividades"
         :key="actividad._id"
         class="glass activity-card"
         :class="{ full: actividad.usuarios.length >= actividad.plazasMaximas }"
@@ -46,17 +52,12 @@
 
         <div class="detail-item">
           <!--JOIN CAMBIAR A EXIT CON UN TOGGLE, NO PERMITIR SI PASA DETERMINADO TIEMPO-->
-          <button
-            class="action-btn join-btn"
-            @click="viewActivityDetails(actividad._id)"
-            :disabled="actividad.usuarios.length === 0"
-          >
-            Apuntarse
+          <button class="action-btn join-btn" @click="toggleJoin(actividad)">
+            {{ alreadyIn(actividad) ? "Salir" : "Apuntarse" }}
           </button>
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -65,6 +66,7 @@ export default {
   name: "mainMenu",
   props: {
     msg: String,
+    user: Object,
   },
   data() {
     return {
@@ -73,12 +75,56 @@ export default {
       error: null,
       showUsers: {},
       sortBy: "recent",
+      sortDirection: "desc",
     };
   },
+   computed: {
+  sortedActividades() {
+    let list = [...this.actividades];
+
+    if (this.sortBy === "reserves") {
+      list.sort((a, b) => {
+        const diff = a.usuarios.length - b.usuarios.length;
+        return this.sortDirection === "desc" ? -diff : diff;
+      });
+    }
+
+    return list;
+  }
+},
+
   mounted() {
     this.loadActividades();
   },
   methods: {
+    alreadyIn(actividad) {
+      return actividad.usuarios.some(
+        (u) => (u._id || u).toString() === this.user.id,
+      );
+    },
+    async toggleJoin(actividad) {
+      if (this.alreadyIn(actividad)) {
+        await fetch(
+          `http://localhost:5000/actividades/${actividad._id}/desinscribir`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: this.user.id }),
+          },
+        );
+      } else {
+        await fetch(
+          `http://localhost:5000/actividades/${actividad._id}/inscribir`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: this.user.id }),
+          },
+        );
+      }
+
+      await this.loadActividades();
+    },
     async loadActividades() {
       this.loading = true;
       this.error = null;
@@ -92,6 +138,7 @@ export default {
 
         const data = await response.json();
         this.actividades = data;
+        this.sortBy = "recent";
       } catch (error) {
         console.error("Error cargando actividades:", error);
         this.error = `No se pudieron cargar las actividades: ${error.message}`;
@@ -99,6 +146,7 @@ export default {
         this.loading = false;
       }
     },
+
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleDateString("es-ES", {
@@ -116,6 +164,19 @@ export default {
     newActivity() {
       this.$emit("newActivity");
     },
+    editActivity(actividad) {
+      this.$emit("editActivity", actividad);
+    },
+sortByReserves() {
+  if (this.sortBy === "reserves") {
+    this.sortDirection =
+      this.sortDirection === "desc" ? "asc" : "desc";
+  } else {
+    this.sortBy = "reserves";
+    this.sortDirection = "desc";
+  }
+}
+
   },
 };
 </script>
@@ -130,8 +191,8 @@ export default {
   height: 88%;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.12),
-    rgba(255,255,255,0.05)
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.05)
   );
   background-color: #00000005;
   backdrop-filter: blur(10px);
@@ -153,19 +214,21 @@ export default {
   width: 6rem;
   height: 6rem;
   object-fit: contain;
-  padding-right: 40rem;
+  padding-right: 80%;
 }
-#titleText{
+#titleText {
   font-size: 1rem;
   margin-bottom: 1rem;
-    padding-right: 40rem;
+  padding-right: 80%;
 }
-.buttonarea{display: flex;
-flex-direction: row;
-justify-content: left;
-height: 3rem;
-column-gap: 25rem;
-padding-bottom:0.5rem ;
+.buttonarea {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 3rem;
+  column-gap: 50%;
+  padding-bottom: 0.5rem;
+width: 100%;
 }
 button {
   font-family: "Inter", sans-serif;
@@ -252,7 +315,6 @@ input:focus {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
 }
 
-
 button:hover {
   background: rgba(255, 255, 255, 0.22);
   transform: translateY(-2px);
@@ -284,7 +346,5 @@ a {
     width: 100%;
     justify-content: space-between;
   }
-
-
 }
 </style>

@@ -61,7 +61,7 @@ const actividadSchema = new mongoose.Schema({
   descripcion: String,
   duracion: { type: Number, required: true },
   plazasMaximas: { type: Number, required: true },
-  fecha: { 
+  fecha: {
     type: Date,
     required: true,
   },
@@ -85,22 +85,22 @@ app.post("/actividades", async (req, res) => {
 
     if (duracion <= 0 || plazasMaximas <= 0) {
       return res.status(400).json({
-        error: "Duración o plazas inválidas"
+        error: "Duración o plazas inválidas",
       });
     }
 
     const fechaActividad = new Date(fecha);
     const ahora = new Date();
-    
+
     if (isNaN(fechaActividad.getTime())) {
       return res.status(400).json({
-        error: "Fecha inválida"
+        error: "Fecha inválida",
       });
     }
 
     if (fechaActividad < ahora) {
       return res.status(400).json({
-        error: "La fecha debe ser futura"
+        error: "La fecha debe ser futura",
       });
     }
 
@@ -108,11 +108,10 @@ app.post("/actividades", async (req, res) => {
     await actividad.save();
 
     res.status(201).json(actividad);
-
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({
-        error: "Ya existe una actividad con ese nombre"
+        error: "Ya existe una actividad con ese nombre",
       });
     }
 
@@ -176,10 +175,20 @@ app.post("/actividades/:id/inscribir", async (req, res) => {
   try {
     const { userId } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "UserId inválido" });
+    }
+
     const actividad = await Actividad.findById(req.params.id);
 
     if (!actividad)
       return res.status(404).json({ error: "Actividad no encontrada" });
+
+    if (actividad.fecha < new Date())
+      return res.status(400).json({ error: "Actividad ya realizada" });
+
+    if (actividad.usuarios.includes(userId))
+      return res.status(400).json({ error: "Usuario ya inscrito" });
 
     if (actividad.usuarios.length >= actividad.plazasMaximas)
       return res.status(400).json({ error: "Actividad llena" });
@@ -188,10 +197,12 @@ app.post("/actividades/:id/inscribir", async (req, res) => {
     await actividad.save();
 
     res.json(actividad);
+
   } catch (err) {
     res.status(500).json({ error: "Error añadiendo usuario" });
   }
 });
+
 //Eliminar usuario
 app.post("/actividades/:id/desinscribir", async (req, res) => {
   try {
@@ -213,20 +224,17 @@ app.post("/actividades/:id/desinscribir", async (req, res) => {
 //crear usuario
 app.post("/users", async (req, res) => {
   try {
-
     const user = new User(req.body);
     await user.save();
 
     res.status(201).json({
       id: user._id,
-      nombreCorreo: user.nombreCorreo
+      nombreCorreo: user.nombreCorreo,
     });
-
   } catch (err) {
-
     if (err.code === 11000) {
       return res.status(400).json({
-        error: "Ese usuario ya existe"
+        error: "Ese usuario ya existe",
       });
     }
 
