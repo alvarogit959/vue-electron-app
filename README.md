@@ -2,64 +2,40 @@
 
 ## Project setup
 ```
+-Comandos necesarios para su funcionamiento:
+
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-### Comandos para creacion base del proyecto: 
 
 npm install -g @vue/cli
 
-vue create vue-electron-app
-
-cd vue-electron-app   
-
 npm install --save-dev electron   
 
-vue add electron-builder   
+vue add electron-builder  
 
-npm run electron:serve   
 npm install cors mongoose
+
 npm install bcrypt
 
 npm install vue-router
+
+-Lanzar app:
+node .\serverVueElectron.js
+npm run electron:serve   
+
 ### Build final de la aplicación:
 npm run electron:build   
 
-<!--PRÁCTICA FINAL
+-Credenciales para iniciar sesión:
+        ADMIN:   nombre: "a" CONTRAEÑA: "a"
+        USUARIO: nombre: "e" CONTRAEÑA: "e"
 
-Comprobar asistencia
-Si canceló en los 15 min anteriores se considera falta de asistencia?
-ver lista nombres usuarios con asistencia o no?
-
-Encriptar claves bcrypt
-
-
-
-
+-Enunciado:
 
 Crear una plataforma en móvil. ma para gestionar actividades y reservas tanto desde escritorio como en movil
 Backend: Mongo (obligatorio) y API en tecnología libre.
 frontend: App de escritorio (Electron y Vue JS), App movil (flutter y Material Design)
 funcionalidades:
--) nombre, desc, fecha y hora, plazas máximas nombre,
+- nombre, desc, fecha y hora, plazas máximas nombre,
 - Gestionar actividades y reservas
 - Login y registro (identificación de red)
 Comprobar asistencia (admin)
@@ -80,55 +56,51 @@ Funcionamiento y errores.
 Dos diagramas de casos de uso
 
 
-
-
-
-LOGIN:
-        image <img alt="Vue logo" src="./assets/logo.png">
-
-        textarea: nombre
-        textarea: contraseña
-        button: iniciar sesion              (if ADMIN abrir modo admin?)
-
-        button: crear cuenta        
-CREAR CUENTA?:
-        image <img alt="Vue logo" src="./assets/logo.png">
-
-        textarea: nombre
-        textarea: contraseñaconf
-        textarea: contraseñaconf
-        button: crear cuenta 
-        button: atrás
-
-ACTIVIDADES:
-        scrollview?: actividades button: reservar
-                                 button: cancelar
-        comprobar reservas? (ordenar los elementos y mostrar en la parte de arriba todas los reservados por el cliente?)
-
-ADMIN:  button: crear nueva actividad (+ arriba del todo)
-        button: ver reservas
-        button: comprobar asistencia
-        scrollview: actividades  button: modificar actividad
-                                 button: eliminar actividad
+-Estructura mongodb:
 
 
 BASE DE DATOS MONGODB
 
-    CUENTA: id
-            nombre-correo
-            contraseña
-            admin si no
-
+    CUENTA: 
+                _id: 69912d506caa1971e542031d
+                nombreCorreo: "a"
+                password "hash de bcrypt"
+                admin: true false
+                __v: 0
     
-    ACTIVIDADES: nombre
-                 descripción?
-                 duración
-                 usuarios:
-                 plazas maximas:
+    ACTIVIDADES: 
+                _id:69910d6fb43329c1d8d9b49f
+                nombre: "Coches clasicos"
+                descripcion:"Quedada Lago de Castiñeiras"
+                duracion: 60
+                plazasMaximas: 30
+                fecha: 2026-02-22T09:00:00.000+00:00
+
+                usuarios: Array 
+                createdAt:2026-02-15T00:03:59.009+00:00
+                __v: 4
+
+-Errores encontrados:
+        En esta aplicacion me encotnre con multiples errores, el principal fue adaptarme al framework vue y sus sistema de vistas, teniendo problemas cada vez que creaba una 
+        vista nueva al tener que enlazar la id como 6 veces entre la ventana actual, App.vue y la ventana nueva, perdiendo mucho tiempo con errores simples al poner la id erronea en algun punto.
+
+        Al principio me encontre con problemas para crear el scrollarea con los elementos, dandone numerosos pantallazos con erroes al no obtener los datos correctamente.
+
+        Queria crear los botones de minimizar y cerrar la ventana dentro de App.vue para que fuese mas limpio e intuitivo, lo que acabo siendo muy complicado de implementar debido a que en App es sencillo,     <button class="defaultbutton" @click="minimizeWindow">_</button> <button class="defaultbutton" @click="closeWindow">X</button> pero en background.js necesite añadir otros elementos al ipcMain que no sabía.
+        Otro de mis problemas principales fue que al ir realizando la aplicacion necesite cambiar la estructura de datos de mongo multiples veces al añadir nuevas funciones, como por ejemplo el que me resulto mas compicado, mostrar el estado de el usuario dentro del evento para indicar si esta pendiente, apuntado o fallo en asistir al evento. Otro problema fue derivado de eso, al tener que re estructurar toda la base de datos para ello y para calcular si quedaban 15 min para el evento.
+
+        Otro problema fue al ordenar los elementos, debido a que los obtenia directamente de la base de datos y los mostraba, por lo que necesite reestructurar todo para ello, añadiendolos a un array y ordenandolos para luego insertarlos.
+
+        A la hora de actualizar la informacion de la cantidad de miembros en la quedada, no encontre un metodo adecuado para actualizar solo el numero, por lo que actualizo la ventana entera, lo que genera un parpadeo y no queda bien en tema visual.
+
+        Problemas con el boton de inscribir al principio debido a que no sabia como alternar el tipo de boton con la funcion de inscribir y salir en el mismo, despues me enontre con problemas de nuevo al cambiar la estructura de la base de datos para añadir el estado del usuario, teniendo que reestructurar parte del trabajo. 
+        La app indica numerosos errores de rendimiento y en algunos elementos indica que el nivel de complejidad es demasiado alto.
+
+        En conclusión mis problemas principales fueron no estrucutrar correctamente desde un principio, haciendo primero una estructura base en mongo pero al añadir opciones tuve que cambiar gran parte de la app, si estructurase correctamente desde un principio no perdería tanto tiempo en ello teniendo que retroceder a cada paso.
+        
+-Estilos:
+        Cree un css inspirado en el estilo Glass de algunas aplicaciones nuevas, usando el efecto backdrop-filter: blur para los fondos transparentes.
+        El fondo de la aplicaicon lo cree en la web https://www.fffuel.co/dddepth/
+        
 
 
-
-
-
-https://www.fffuel.co/dddepth/
--->

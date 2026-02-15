@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const http = require("http");
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(cors());
@@ -272,17 +273,27 @@ app.post("/actividades/:id/asistencia", async (req, res) => {
 //crear usuario
 app.post("/users", async (req, res) => {
   try {
-    const user = new User(req.body);
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const user = new User({
+      nombreCorreo: req.body.nombreCorreo,
+      password: hashedPassword,
+      admin: req.body.admin || false
+    });
+
     await user.save();
 
     res.status(201).json({
       id: user._id,
-      nombreCorreo: user.nombreCorreo,
+      nombreCorreo: user.nombreCorreo
     });
+
   } catch (err) {
+
     if (err.code === 11000) {
       return res.status(400).json({
-        error: "Ese usuario ya existe",
+        error: "Ese usuario ya existe"
       });
     }
 
@@ -290,21 +301,30 @@ app.post("/users", async (req, res) => {
   }
 });
 
+
 //TEST LOGIN
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({ nombreCorreo: username });
 
-  if (!user || user.password !== password) {
+  if (!user) {
     return res.status(401).json({ error: "Credenciales incorrectas" });
   }
+
+  const match = await bcrypt.compare(password, user.password);
+
+  if (!match) {
+    return res.status(401).json({ error: "Credenciales incorrectas" });
+  }
+
   res.json({
     id: user._id,
     nombreCorreo: user.nombreCorreo,
-    admin: user.admin,
+    admin: user.admin
   });
 });
+
 
 /*
 wss.clients.forEach(client => {
