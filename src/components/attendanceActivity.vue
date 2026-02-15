@@ -1,8 +1,8 @@
 <template>
-  <div class="mainarea">
+  <div class="mainarea" v-if="actividad">
     <h1>{{ msg }}</h1>
     <img id="image" src="../assets/transport.png" />
-    <h3>Crear nueva actividad</h3>
+    <h3>Comprobar asistencia</h3>
     <p id="notifications">{{ notification }}</p>
     <p><strong>Nombre:</strong> {{ actividad.nombre }}</p>
     <p><strong>Descripción:</strong> {{ actividad.descripcion }}</p>
@@ -14,8 +14,8 @@
       <ul>
         <li v-for="usuario in usuariosConAsistencia" :key="usuario.nombre">
           {{ usuario.nombre }} -
-          <span :class="{ present: usuario.asistio, absent: !usuario.asistio }">
-            {{ usuario.asistio ? "Asistió" : "Falta" }}
+          <span :class="usuario.estado">
+            {{ usuario.estado }}
           </span>
         </li>
       </ul>
@@ -29,95 +29,25 @@ export default {
   name: "attendanceActivity",
   props: {
     msg: String,
+    actividad: Object,
   },
-  data() {
-    const hoy = new Date();
-    const año = hoy.getFullYear();
-    const mes = String(hoy.getMonth() + 1).padStart(2, "0");
-    const dia = String(hoy.getDate()).padStart(2, "0");
-    const horas = String(hoy.getHours()).padStart(2, "0");
-    const minutos = String(hoy.getMinutes()).padStart(2, "0");
 
-    const fechaMinima = `${año}-${mes}-${dia}T${horas}:${minutos}`;
-    return {
-      activityname: "",
-      activitydescription: "",
-      activitydate: "",
-      activityduration: "",
-      activitymaxusers: "",
-      notification: "",
-      minDate: fechaMinima,
-      errors: {
-        nombre: false,
-        fecha: false,
-        duracion: false,
-        plazas: false,
-      },
-    };
+  computed: {
+    usuariosConAsistencia() {
+      if (!this.actividad?.usuarios) return [];
+
+      return this.actividad.usuarios.map((u) => ({
+        nombre: u.user?.nombreCorreo || u.user?._id,
+        estado: u.estado,
+      }));
+    },
   },
-  /*nombre: {
-    type: String,
-    required: true
-  },
-  descripcion: String,
-  duracion: Number,
-  plazasMaximas: Number, */
+
   methods: {
-    async createActivity() {
-      if (
-        !this.activityname ||
-        !this.activityduration ||
-        !this.activitymaxusers
-      ) {
-        this.notification = "Completa todos los campos!";
-        return;
-      }
-      try {
-        const res = await fetch("http://localhost:5000/actividades", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            nombre: this.activityname,
-            descripcion: this.activitydescription || "",
-            fecha: new Date(this.activitydate).toISOString(),
-            duracion: parseInt(this.activityduration),
-            plazasMaximas: parseInt(this.activitymaxusers),
-          }),
-        });
-
-        if (!res.ok) {
-          this.notification = "Error, compruebe sus datos";
-          return;
-        }
-
-        const activity = await res.json();
-        //clean
-        this.activityname = "";
-        this.activitydescription = "";
-        this.activitydate = "";
-        this.activityduration = "";
-        this.activitymaxusers = "";
-
-        this.$emit("activity-created", activity);
-        this.notification = "Creada correctamente";
-      } catch (error) {
-        console.error(error);
-        this.notification = "Error conectando con servidor";
-      }
+    formatDate(dateString) {
+      return new Date(dateString).toLocaleString("es-ES");
     },
-    selectOption(option) {
-      this.notification = `Seleccionaste: ${option}`;
-    },
-    //TERMINAR!!!===============================
-    /* return() {
-      this.$emit("return");
-    },*/
-    /*
-    logout() {
-      this.$emit("logout");
-    },*/
+
     goBack() {
       this.$emit("back");
     },
@@ -129,7 +59,7 @@ export default {
 .mainarea {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 0.01rem;
   width: 30rem;
   height: 40rem;
   background: linear-gradient(
@@ -152,11 +82,11 @@ export default {
   -webkit-app-region: no-drag;
 }
 #image {
-  width: 9rem;
-  height: 9rem;
+  width: 6rem;
+  height: 6rem;
   object-fit: contain;
   margin-top: -3rem;
-  margin-bottom: -3rem;
+  margin-bottom: -4rem;
 }
 #notifications {
   margin-top: -0.5rem;
@@ -204,10 +134,10 @@ h3 {
   color: rgb(255, 255, 255);
   font-size: 1.7rem;
 }
-.date-p-container {
+.date-input-container {
   width: 30rem;
 }
-p {
+input {
   font-family: "Inter", sans-serif;
   width: 60%;
   height: 2.8rem;
@@ -222,11 +152,11 @@ p {
   border-radius: 1rem;
   color: white;
 }
-p::placeholder {
+input::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
-p:focus {
+input:focus {
   border-color: rgba(255, 255, 255, 0.6);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
 }

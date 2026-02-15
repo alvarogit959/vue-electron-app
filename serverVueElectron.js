@@ -54,29 +54,34 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 //ACTIVIDADES
 const actividadSchema = new mongoose.Schema({
-  nombre: {
-    type: String,
-    required: true,
-  },
+  nombre: { type: String, required: true },
   descripcion: String,
   duracion: { type: Number, required: true },
   plazasMaximas: { type: Number, required: true },
-  fecha: {
-    type: Date,
-    required: true,
-  },
+  fecha: { type: Date, required: true },
+
   usuarios: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+      },
+      estado: {
+        type: String,
+        enum: ["pendiente", "asistio", "falta"],
+        default: "pendiente"
+      },
+      fechaCancelacion: Date
+    }
   ],
 
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
+
 const Actividad = mongoose.model("Actividad", actividadSchema);
 //Crear actividad
 app.post("/actividades", async (req, res) => {
@@ -123,7 +128,7 @@ app.post("/actividades", async (req, res) => {
 app.get("/actividades", async (req, res) => {
   try {
     const actividades = await Actividad.find().populate(
-      "usuarios",
+      "usuarios.user",
       "nombreCorreo",
     );
 
@@ -174,34 +179,36 @@ app.delete("/actividades/:id", async (req, res) => {
 app.post("/actividades/:id/inscribir", async (req, res) => {
   try {
     const { userId } = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: "UserId inválido" });
-    }
-
     const actividad = await Actividad.findById(req.params.id);
 
-    if (!actividad)
-      return res.status(404).json({ error: "Actividad no encontrada" });
+    if (!actividad) return res.status(404).json({ error: "No encontrada" });
 
     if (actividad.fecha < new Date())
       return res.status(400).json({ error: "Actividad ya realizada" });
 
-    if (actividad.usuarios.includes(userId))
-      return res.status(400).json({ error: "Usuario ya inscrito" });
+    const yaInscrito = actividad.usuarios.some(
+      u => u.user.toString() === userId
+    );
+
+    if (yaInscrito)
+      return res.status(400).json({ error: "Ya inscrito" });
 
     if (actividad.usuarios.length >= actividad.plazasMaximas)
       return res.status(400).json({ error: "Actividad llena" });
 
-    actividad.usuarios.push(userId);
+    actividad.usuarios.push({
+      user: userId,
+      estado: "pendiente"
+    });
+
     await actividad.save();
 
     res.json(actividad);
-
   } catch (err) {
-    res.status(500).json({ error: "Error añadiendo usuario" });
+    res.status(500).json({ error: "Error inscribiendo" });
   }
 });
+
 
 //Eliminar usuario
 app.post("/actividades/:id/desinscribir", async (req, res) => {
@@ -210,17 +217,58 @@ app.post("/actividades/:id/desinscribir", async (req, res) => {
 
     const actividad = await Actividad.findById(req.params.id);
 
-    actividad.usuarios = actividad.usuarios.filter(
-      (u) => u.toString() !== userId,
+    const participante = actividad.usuarios.find(
+      u => u.user.toString() === userId
     );
+
+    if (!participante)
+      return res.status(404).json({ error: "Usuario no inscrito" });
+
+    const ahora = new Date();
+    const inicio = new Date(actividad.fecha);
+
+    const diff = inicio - ahora;
+
+    if (diff <= 15 * 60 * 1000) {
+      participante.estado = "falta";
+      participante.fechaCancelacion = ahora;
+    } else {
+      actividad.usuarios = actividad.usuarios.filter(
+        u => u.user.toString() !== userId
+      );
+    }
 
     await actividad.save();
 
     res.json(actividad);
   } catch (err) {
-    res.status(500).json({ error: "Error eliminando usuario" });
+    res.status(500).json({ error: "Error desinscribiendo" });
   }
 });
+app.post("/actividades/:id/asistencia", async (req, res) => {
+  try {
+    const { userId, asistio } = req.body;
+
+    const actividad = await Actividad.findById(req.params.id);
+
+    const participante = actividad.usuarios.find(
+      u => u.user.toString() === userId
+    );
+
+    if (!participante)
+      return res.status(404).json({ error: "Usuario no inscrito" });
+
+    participante.estado = asistio ? "asistio" : "falta";
+
+    await actividad.save();
+
+    res.json(actividad);
+
+  } catch (err) {
+    res.status(500).json({ error: "Error marcando asistencia" });
+  }
+});
+
 //crear usuario
 app.post("/users", async (req, res) => {
   try {

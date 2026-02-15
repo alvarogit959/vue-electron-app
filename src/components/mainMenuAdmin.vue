@@ -65,11 +65,11 @@
             Modificar
           </button>
           <!--ASISTENCIA-->
+          <!-- :disabled="actividad.usuarios.length === 0" -->
           <button
             class="action-btn"
             id="checkUsers"
-            :disabled="actividad.usuarios.length === 0"
-            @click="viewActivityDetails(actividad)"
+            @click="attendanceActivity(actividad)"
           >
             Comprobar asistencia
           </button>
@@ -168,7 +168,7 @@ export default {
     editActivity(actividad) {
       this.$emit("editActivity", actividad);
     },
-    viewActivityDetails(actividad) {
+    attendanceActivity(actividad) {
       this.$emit("attendanceActivity", actividad);
     },
     sortByReserves() {

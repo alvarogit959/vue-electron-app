@@ -144,7 +144,7 @@ export default {
   flex-direction: column;
   row-gap: 1rem;
   width: 30rem;
-  height: 50rem;
+  height: 40rem;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.12),

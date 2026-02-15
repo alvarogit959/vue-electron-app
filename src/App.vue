@@ -10,14 +10,14 @@
   />
 
   <newUser v-else-if="screen === 'newUser'" @back="goLogin" />
-  <mainMenuAdmin
-    v-else-if="screen === 'main' && user && user.admin"
-    :user="user"
-    @logout="logout"
-    @newActivity="goNewActivity"
-    @editActivity="goEditActivity"
-    @AttendanceActivity="goAttendanceActivity"
-  />
+<mainMenuAdmin
+  v-else-if="screen === 'main' && user && user.admin"
+  :user="user"
+  @logout="logout"
+  @newActivity="goNewActivity"
+  @editActivity="goEditActivity"
+  @attendanceActivity="goAttendanceActivity"
+/>
   <newActivity
     v-else-if="screen === 'newActivity'"
     @logout="logout"
@@ -30,9 +30,10 @@
 />
 <attendanceActivity
   v-else-if="screen === 'attendanceActivity'"
-  :activity="selectedActivity"
+  :actividad="selectedActivity"
   @back="goMain"
 />
+
 
  <mainMenu
   v-else-if="screen === 'main' && user"
@@ -94,10 +95,11 @@ export default {
   this.selectedActivity = actividad;
   this.screen = "editActivity";
 },
-    goAttendanceActivity(actividad) {
+   goAttendanceActivity(actividad) {
   this.selectedActivity = actividad;
   this.screen = "attendanceActivity";
-},
+}
+,
     goMain() {
       this.screen = "main";
     },

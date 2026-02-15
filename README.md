@@ -37,6 +37,7 @@ vue add electron-builder
 
 npm run electron:serve   
 npm install cors mongoose
+npm install bcrypt
 
 npm install vue-router
 ### Build final de la aplicación:
@@ -48,7 +49,7 @@ Comprobar asistencia
 Si canceló en los 15 min anteriores se considera falta de asistencia?
 ver lista nombres usuarios con asistencia o no?
 
-
+Encriptar claves bcrypt
 
 
 

@@ -97,11 +97,11 @@ export default {
     this.loadActividades();
   },
   methods: {
-    alreadyIn(actividad) {
-      return actividad.usuarios.some(
-        (u) => (u._id || u).toString() === this.user.id,
-      );
-    },
+alreadyIn(actividad) {
+  return actividad.usuarios.some(
+    (u) => u.user?._id?.toString() === this.user.id
+  );
+},
     async toggleJoin(actividad) {
       if (this.alreadyIn(actividad)) {
         await fetch(
