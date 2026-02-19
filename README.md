@@ -31,11 +31,11 @@
 
 ### Enunciado:
 
-Crear una plataforma en móvil. ma para gestionar actividades y reservas tanto desde escritorio como en movil
+Crear una plataforma en móvil. Para gestionar actividades y reservas tanto desde escritorio como en movil
 Backend: Mongo (obligatorio) y API en tecnología libre.
-frontend: App de escritorio (Electron y Vue JS), App movil (flutter y Material Design)
+Frontend: App de escritorio (Electron y Vue JS), App movil (flutter y Material Design)
 funcionalidades:
-- nombre, desc, fecha y hora, plazas máximas nombre,
+- nombre, desc, fecha y hora, plazas máximas nombre
 - Gestionar actividades y reservas
 - Login y registro (identificación de red)
 Comprobar asistencia (admin)
