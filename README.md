@@ -81,13 +81,21 @@ Dos diagramas de casos de uso
 En esta aplicacion me encotnre con multiples errores, el principal fue adaptarme al framework vue y sus sistema de vistas, teniendo problemas cada vez que creaba una 
         vista nueva al tener que enlazar la id como 6 veces entre la ventana actual, App.vue y la ventana nueva, perdiendo mucho tiempo con errores simples al poner la id erronea en algun punto.
         Al principio me encontre con problemas para crear el scrollarea con los elementos, dandone numerosos pantallazos con erroes al no obtener los datos correctamente.
-        Queria crear los botones de minimizar y cerrar la ventana dentro de App.vue para que fuese mas limpio e intuitivo, lo que acabo siendo muy complicado de implementar debido a que en App es sencillo,     <button class="defaultbutton" @click="minimizeWindow">_</button> <button class="defaultbutton" @click="closeWindow">X</button> pero en background.js necesite añadir otros elementos al ipcMain que no sabía.
-        Otro de mis problemas principales fue que al ir realizando la aplicacion necesite cambiar la estructura de datos de mongo multiples veces al añadir nuevas funciones, como por ejemplo el que me resulto mas compicado, mostrar el estado de el usuario dentro del evento para indicar si esta pendiente, apuntado o fallo en asistir al evento. Otro problema fue derivado de eso, al tener que re estructurar toda la base de datos para ello y para calcular si quedaban 15 min para el evento.
-        Otro problema fue al ordenar los elementos, debido a que los obtenia directamente de la base de datos y los mostraba, por lo que necesite reestructurar todo para ello, añadiendolos a un array y ordenandolos para luego insertarlos.
-        A la hora de actualizar la informacion de la cantidad de miembros en la quedada, no encontre un metodo adecuado para actualizar solo el numero, por lo que actualizo la ventana entera, lo que genera un parpadeo y no queda bien en tema visual.
-        Problemas con el boton de inscribir al principio debido a que no sabia como alternar el tipo de boton con la funcion de inscribir y salir en el mismo, despues me enontre con problemas de nuevo al cambiar la estructura de la base de datos para añadir el estado del usuario, teniendo que reestructurar parte del trabajo. 
-        La app indica numerosos errores de rendimiento y en algunos elementos indica que el nivel de complejidad es demasiado alto.
-        En conclusión mis problemas principales fueron no estrucutrar correctamente desde un principio, haciendo primero una estructura base en mongo pero al añadir opciones tuve que cambiar gran parte de la app, si estructurase correctamente desde un principio no perdería tanto tiempo en ello teniendo que retroceder a cada paso.
+
+        
+ Queria crear los botones de minimizar y cerrar la ventana dentro de App.vue para que fuese mas limpio e intuitivo, lo que acabo siendo muy complicado de implementar debido a que en App es sencillo,     <button class="defaultbutton" @click="minimizeWindow">_</button> <button class="defaultbutton" @click="closeWindow">X</button> pero en background.js necesite añadir otros elementos al ipcMain que no sabía.
+ Otro de mis problemas principales fue que al ir realizando la aplicacion necesite cambiar la estructura de datos de mongo multiples veces al añadir nuevas funciones, como por ejemplo el que me resulto mas compicado, mostrar el estado de el usuario dentro del evento para indicar si esta pendiente, apuntado o fallo en asistir al evento. Otro problema fue derivado de eso, al tener que re estructurar toda la base de datos para ello y para calcular si quedaban 15 min para el evento.
+ 
+ Otro problema fue al ordenar los elementos, debido a que los obtenia directamente de la base de datos y los mostraba, por lo que necesite reestructurar todo para ello, añadiendolos a un array y ordenandolos para luego insertarlos.
+ 
+ A la hora de actualizar la informacion de la cantidad de miembros en la quedada, no encontre un metodo adecuado para actualizar solo el numero, por lo que actualizo la ventana entera, lo que genera un parpadeo y no queda bien en tema visual.
+ 
+ Problemas con el boton de inscribir al principio debido a que no sabia como alternar el tipo de boton con la funcion de inscribir y salir en el mismo, despues me enontre con problemas de nuevo al cambiar la estructura de la base de datos para añadir el estado del usuario, teniendo que reestructurar parte del trabajo. 
+ 
+ La app indica numerosos errores de rendimiento y en algunos elementos indica que el nivel de complejidad es demasiado alto.
+ 
+ En conclusión mis problemas principales fueron no estrucutrar correctamente desde un principio, haciendo primero una estructura base en mongo pero al añadir opciones tuve que cambiar gran parte de la app, si estructurase correctamente desde un principio no perdería tanto tiempo en ello teniendo que retroceder a cada paso.
+ 
 ## Estilos:
 Cree un css inspirado en el estilo Glass de algunas aplicaciones nuevas, usando el efecto backdrop-filter: blur para los fondos transparentes.
         El fondo de la aplicaicon lo cree en la web https://www.fffuel.co/dddepth/
