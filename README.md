@@ -4,26 +4,26 @@
 
 -Comandos necesarios para su funcionamiento:
 
-npm install
+        npm install
 
-npm install -g @vue/cli
+        npm install -g @vue/cli
 
-npm install --save-dev electron   
+        npm install --save-dev electron   
 
-vue add electron-builder  
+        vue add electron-builder  
 
-npm install cors mongoose
+        npm install cors mongoose
 
-npm install bcrypt
+        npm install bcrypt
 
-npm install vue-router
+        npm install vue-router
 
 ### Lanzar app:
-node .\serverVueElectron.js
-npm run electron:serve   
+        node .\serverVueElectron.js
+        npm run electron:serve   
 
 ### Build final de la aplicación:
-npm run electron:build   
+        npm run electron:build   
 
 ### Credenciales para iniciar sesión:
         ADMIN:   nombre: "a" CONTRAEÑA: "a"
@@ -59,14 +59,14 @@ Dos diagramas de casos de uso
 ### Estructura mongodb:
 
 
-BASE DE DATOS MONGODB
-    CUENTA: 
+## BASE DE DATOS MONGODB
+        CUENTA: 
                 _id: 69912d506caa1971e542031d
                 nombreCorreo: "a"
                 password "hash de bcrypt"
                 admin: true false
                 __v: 0
-    ACTIVIDADES: 
+        ACTIVIDADES: 
                 _id:69910d6fb43329c1d8d9b49f
                 nombre: "Coches clasicos"
                 descripcion:"Quedada Lago de Castiñeiras"
@@ -78,7 +78,7 @@ BASE DE DATOS MONGODB
                 __v: 4
 
 ## Errores encontrados:
-        En esta aplicacion me encotnre con multiples errores, el principal fue adaptarme al framework vue y sus sistema de vistas, teniendo problemas cada vez que creaba una 
+En esta aplicacion me encotnre con multiples errores, el principal fue adaptarme al framework vue y sus sistema de vistas, teniendo problemas cada vez que creaba una 
         vista nueva al tener que enlazar la id como 6 veces entre la ventana actual, App.vue y la ventana nueva, perdiendo mucho tiempo con errores simples al poner la id erronea en algun punto.
         Al principio me encontre con problemas para crear el scrollarea con los elementos, dandone numerosos pantallazos con erroes al no obtener los datos correctamente.
         Queria crear los botones de minimizar y cerrar la ventana dentro de App.vue para que fuese mas limpio e intuitivo, lo que acabo siendo muy complicado de implementar debido a que en App es sencillo,     <button class="defaultbutton" @click="minimizeWindow">_</button> <button class="defaultbutton" @click="closeWindow">X</button> pero en background.js necesite añadir otros elementos al ipcMain que no sabía.
@@ -89,7 +89,7 @@ BASE DE DATOS MONGODB
         La app indica numerosos errores de rendimiento y en algunos elementos indica que el nivel de complejidad es demasiado alto.
         En conclusión mis problemas principales fueron no estrucutrar correctamente desde un principio, haciendo primero una estructura base en mongo pero al añadir opciones tuve que cambiar gran parte de la app, si estructurase correctamente desde un principio no perdería tanto tiempo en ello teniendo que retroceder a cada paso.
 ## Estilos:
-        Cree un css inspirado en el estilo Glass de algunas aplicaciones nuevas, usando el efecto backdrop-filter: blur para los fondos transparentes.
+Cree un css inspirado en el estilo Glass de algunas aplicaciones nuevas, usando el efecto backdrop-filter: blur para los fondos transparentes.
         El fondo de la aplicaicon lo cree en la web https://www.fffuel.co/dddepth/
         
 
