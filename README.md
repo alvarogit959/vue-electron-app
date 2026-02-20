@@ -28,7 +28,7 @@
 ### Credenciales para iniciar sesión:
         ADMIN:   nombre: "a" CONTRAEÑA: "a"
         USUARIO: nombre: "e" CONTRAEÑA: "e"
-
+Solo el usuario a es admin, para crear uno nuevo se edita el valor admin en mongo de forma manual, cambiandolo a true.
 ### Enunciado:
 
 Crear una plataforma en móvil. Para gestionar actividades y reservas tanto desde escritorio como en movil
@@ -98,16 +98,18 @@ En esta aplicacion me encotnre con multiples errores, el principal fue adaptarme
  
 ## Estilos:
 Cree un css inspirado en el estilo Glass de algunas aplicaciones nuevas, usando el efecto backdrop-filter: blur para los fondos transparentes.
-
-## Casos de uso:
-### Usuario común:
-![test](https://github.com/user-attachments/assets/bea4bdb3-711c-42a1-b3a3-87e5e6d7eb59)
-
-### Admin:
-
-
-
         El fondo de la aplicaicon lo cree en la web https://www.fffuel.co/dddepth/
+        
+## Casos de uso:
+En este apartado veremos los casos de uso dentro de la aplicación:
+<img width="868" height="573" alt="esquema" src="https://github.com/user-attachments/assets/e874ed60-0193-4d0f-b67c-f148e15b0c2a" />
+
+Estos son los usos basicos de los usuarios normales y admin, el esquema entidad relación es algo diferente, esta resumido eliminando las confirmaciones dentro de cada uno de los menús:
+<img width="1131" height="611" alt="esquema2" src="https://github.com/user-attachments/assets/c2ab5aac-da86-46f9-b375-c47d6c4a667d" />
+
+
+
+
         
 
 
