@@ -98,6 +98,15 @@ En esta aplicacion me encotnre con multiples errores, el principal fue adaptarme
  
 ## Estilos:
 Cree un css inspirado en el estilo Glass de algunas aplicaciones nuevas, usando el efecto backdrop-filter: blur para los fondos transparentes.
+
+## Casos de uso:
+### Usuario común:
+![test](https://github.com/user-attachments/assets/bea4bdb3-711c-42a1-b3a3-87e5e6d7eb59)
+
+### Admin:
+
+
+
         El fondo de la aplicaicon lo cree en la web https://www.fffuel.co/dddepth/
         
 
